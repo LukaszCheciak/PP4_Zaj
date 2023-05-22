@@ -1,33 +1,34 @@
 package pl.jkanclerz;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import  java.util.List;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import pl.jkanclerz.productcatalog.HashMapProductStorage;
+import pl.jkanclerz.productcatalog.ProductCatalog;
+
+import java.math.BigDecimal;
+
+@SpringBootApplication
 public class App {
     public static void main(String[] args) {
-        List<String> names = Arrays.asList("Damian","Jakub","Basia","Szymon","Ania");
+        SpringApplication.run(App.class, args);
+    }
 
-        Greeter greeter = new Greeter();
-        greeter.greet("Mateusz");
+    @Bean
+    ProductCatalog createNewProductCatalog() {
+        ProductCatalog productCatalog = new ProductCatalog(new HashMapProductStorage());
 
-        List<String> ladies = new ArrayList<String>();
+        String productId1 = productCatalog.addProduct("My ebok", "NIce one");
+        productCatalog.assignImage(productId1, "images/nice.jpeg");
+        productCatalog.changePrice(productId1, BigDecimal.TEN);
+        productCatalog.publishProduct(productId1);
 
-        for(String name:names){
-            if(name.endsWith("a")){
-                ladies.add(name);
-            }
-        }
+        String productId2 = productCatalog.addProduct("New Ebook", "NIce one");
+        productCatalog.assignImage(productId2, "images/nice.jpeg");
+        productCatalog.changePrice(productId2, BigDecimal.valueOf(20.20));
+        productCatalog.publishProduct(productId2);
 
-        for(String ladyName: ladies){
-            greeter.greet(ladyName);
-        }
-
-        names.stream()
-                .filter(name -> name.endsWith("a")) // lambda name: name[-1] == "a"
-                .filter(name -> name.startsWith("A"))
-                .map(String::toUpperCase)
-                .forEach(greeter::greet);
-
+        return productCatalog;
     }
 }
